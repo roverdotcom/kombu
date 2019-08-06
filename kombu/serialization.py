@@ -56,7 +56,10 @@ def _reraise_errors(wrapper,
 
 def pickle_loads(s, load=pickle_load):
     # used to support buffer objects
-    return load(BytesIO(s))
+    try:
+        return load(BytesIO(s))
+    except UnicodeDecodeError:
+        return load(BytesIO(s), encoding='latin1')
 
 
 def parenthesize_alias(first, second):

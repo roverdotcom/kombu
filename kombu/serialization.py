@@ -1,5 +1,5 @@
 """Serialization utilities."""
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 import codecs
 import os
@@ -57,9 +57,14 @@ def _reraise_errors(wrapper,
 def pickle_loads(s, load=pickle_load):
     # used to support buffer objects
     try:
-        return load(BytesIO(s))
+        f = BytesIO(s)
+        return load(f)
     except UnicodeDecodeError:
-        return load(BytesIO(s), encoding='latin1')
+        f = BytesIO(s)
+        return load(f, encoding='latin1')
+    except TypeError as exc:
+        print(s)
+        raise
 
 
 def parenthesize_alias(first, second):

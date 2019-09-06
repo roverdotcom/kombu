@@ -1,6 +1,7 @@
 """Serialization utilities."""
 from __future__ import absolute_import, unicode_literals, print_function
 
+import base64
 import codecs
 import os
 import sys
@@ -63,7 +64,7 @@ def pickle_loads(s, load=pickle_load):
         f = BytesIO(s)
         return load(f, encoding='latin1')
     except TypeError as exc:
-        print(s)
+        print(base64.b64encode(s))
         raise
 
 

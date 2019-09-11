@@ -222,6 +222,13 @@ class Transport(object):
                 if exc.errno in _unavail:
                     return
                 raise
+            except SystemError as sys_err:
+                # Dedupe this exception with a common error message for Sentry;
+                # the error from librabbitmq contains an object memory address
+                # and thus does not get correctly deduped by Sentry
+                if 'built-in method _basic_recv of Connection object' in str(sys_err):
+                    raise SystemError('Error draining from librabbitmq connection')
+                raise
             loop.call_soon(_read, loop)
 
         return _read
